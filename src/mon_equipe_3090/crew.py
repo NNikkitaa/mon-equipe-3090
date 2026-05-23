@@ -6,49 +6,44 @@ import os
 class MonEquipe3090():
     """Système Crew pour le portfolio de Hensen"""
 
-    # On définit le modèle Qwen 3.6 ici pour qu'il soit partagé par tous les agents
-    # Le timeout est mis à 300 secondes car les gros modèles mettent du temps à charger en VRAM
+    # Configuration du LLM pour ta 3090
     qwen_llm = LLM(
         model=os.getenv("OPENAI_MODEL_NAME", "ollama/qwen3.6:27b"),
-        base_url=os.getenv("OPENAI_API_BASE"), # Doit finir par /v1 sur la plateforme
+        base_url=os.getenv("OPENAI_API_BASE"),
         api_key="ollama",
-        timeout=300,
-        temperature=0.3
+        timeout=300
     )
 
     @agent
     def expert_technique(self) -> Agent:
         return Agent(
-            config=self.agents_config['expert_technique'],
+            config=self.agents_config['expert_technique'], # Doit correspondre au YAML
             llm=self.qwen_llm,
-            verbose=True,
-            allow_delegation=False
+            verbose=True
         )
 
     @agent
     def designer_motion(self) -> Agent:
         return Agent(
-            config=self.agents_config['designer_motion'],
+            config=self.agents_config['designer_motion'], # Doit correspondre au YAML
             llm=self.qwen_llm,
-            verbose=True,
-            allow_delegation=False
+            verbose=True
         )
 
     @task
     def recherche_task(self) -> Task:
         return Task(
-            config=self.tasks_config['recherche_task'],
+            config=self.tasks_config['recherche_task'] # Doit correspondre au YAML
         )
 
     @task
     def developpement_task(self) -> Task:
         return Task(
-            config=self.tasks_config['developpement_task'],
+            config=self.tasks_config['developpement_task'] # Doit correspondre au YAML
         )
 
     @crew
     def crew(self) -> Crew:
-        """Crée l'équipe de production"""
         return Crew(
             agents=self.agents,
             tasks=self.tasks,
