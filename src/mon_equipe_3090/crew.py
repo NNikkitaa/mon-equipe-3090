@@ -1,63 +1,57 @@
-from crewai import Agent, Crew, Process, Task
+from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
-from crewai.agents.agent_builder.base_agent import BaseAgent
-# If you want to run a snippet of code before or after the crew starts,
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+import os
 
 @CrewBase
 class MonEquipe3090():
-    """MonEquipe3090 crew"""
+    """Système Crew pour le portfolio de Hensen"""
 
-    agents: list[BaseAgent]
-    tasks: list[Task]
+    # On définit le modèle Qwen 3.6 ici pour qu'il soit partagé par tous les agents
+    # Le timeout est mis à 300 secondes car les gros modèles mettent du temps à charger en VRAM
+    qwen_llm = LLM(
+        model=os.getenv("OPENAI_MODEL_NAME", "ollama/qwen3.6:27b"),
+        base_url=os.getenv("OPENAI_API_BASE"), # Doit finir par /v1 sur la plateforme
+        api_key="ollama",
+        timeout=300,
+        temperature=0.3
+    )
 
-    # Learn more about YAML configuration files here:
-    # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-    # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
-    
-    # If you would like to add tools to your agents, you can learn more about it here:
-    # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
-    def researcher(self) -> Agent:
+    def expert_technique(self) -> Agent:
         return Agent(
-            config=self.agents_config['researcher'], # type: ignore[index]
-            verbose=True
+            config=self.agents_config['expert_technique'],
+            llm=self.qwen_llm,
+            verbose=True,
+            allow_delegation=False
         )
 
     @agent
-    def reporting_analyst(self) -> Agent:
+    def designer_motion(self) -> Agent:
         return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
-            verbose=True
-        )
-
-    # To learn more about structured task outputs,
-    # task dependencies, and task callbacks, check out the documentation:
-    # https://docs.crewai.com/concepts/tasks#overview-of-a-task
-    @task
-    def research_task(self) -> Task:
-        return Task(
-            config=self.tasks_config['research_task'], # type: ignore[index]
+            config=self.agents_config['designer_motion'],
+            llm=self.qwen_llm,
+            verbose=True,
+            allow_delegation=False
         )
 
     @task
-    def reporting_task(self) -> Task:
+    def recherche_task(self) -> Task:
         return Task(
-            config=self.tasks_config['reporting_task'], # type: ignore[index]
-            output_file='report.md'
+            config=self.tasks_config['recherche_task'],
+        )
+
+    @task
+    def developpement_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['developpement_task'],
         )
 
     @crew
     def crew(self) -> Crew:
-        """Creates the MonEquipe3090 crew"""
-        # To learn how to add knowledge sources to your crew, check out the documentation:
-        # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
-
+        """Crée l'équipe de production"""
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
+            agents=self.agents,
+            tasks=self.tasks,
             process=Process.sequential,
             verbose=True,
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )

@@ -1,20 +1,13 @@
 [project]
 name = "mon_equipe_3090"
 version = "0.1.0"
-description = "mon_equipe_3090 using crewAI"
-authors = [{ name = "Hensen", email = "hensenvoltier@gmail.com" }]
-requires-python = ">=3.10,<3.14"
+description = "Système d'agents pour le portfolio 3d de Hensen"
+authors = [{ name = "Hensen Martial", email = "votre@email.com" }]
+requires-python = ">=3.10,<3.13"
 dependencies = [
-    "crewai[tools]==1.14.5a2",
+    "crewai>=0.35.0",
+    "langchain-openai>=0.1.0",
 ]
-
-[project.scripts]
-mon_equipe_3090 = "mon_equipe_3090.main:run"
-run_crew = "mon_equipe_3090.main:run"
-train = "mon_equipe_3090.main:train"
-replay = "mon_equipe_3090.main:replay"
-test = "mon_equipe_3090.main:test"
-run_with_trigger = "mon_equipe_3090.main:run_with_trigger"
 
 [build-system]
 requires = ["hatchling"]
