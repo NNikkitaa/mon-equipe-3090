@@ -1,13 +1,13 @@
 recherche_task:
   description: >
-    Analyser les dernières tendances en Motion Design 3D pour le secteur du luxe en 2026.
+    Analyser les tendances Motion 2026.
   expected_output: >
-    Un document de recherche détaillé avec des références visuelles et techniques.
+    Un rapport technique.
   agent: expert_technique
 
 developpement_task:
   description: >
-    Générer un script de base ou une structure de code pour un effet de défilement 3D interactif.
+    Coder un effet Three.js.
   expected_output: >
-    Un bloc de code propre et commenté, prêt à être testé dans After Effects ou un navigateur.
+    Un script fonctionnel.
   agent: designer_motion
